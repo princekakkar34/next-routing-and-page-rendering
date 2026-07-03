@@ -45,6 +45,11 @@ ul {
   text-decoration: none;
 }
 
+#main-header nav {
+  display: flex;
+  gap: 1rem;
+}
+
 #main-header ul {
   display: flex;
   gap: 2rem;
