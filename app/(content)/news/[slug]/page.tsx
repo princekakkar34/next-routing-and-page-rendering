@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
-import { DUMMY_NEWS } from "@/mocks/dummyNews";
 import Link from "next/link";
+import { getNewsItem } from "@/utils/news";
 
 export default async function NewDetailPage({ params }: { params: { slug: string } }) {
   const { slug } = await params;
-  const newsItem = DUMMY_NEWS.find((news) => news.slug === slug)!;
+  const newsItem = await getNewsItem(slug);
   if (!newsItem) {
     notFound();
   }

@@ -1,4 +1,5 @@
 import NewsList from "@/components/newsList";
+import { NEWS } from "@/mocks/dummyNews";
 import { getAvailableNewsMonths, getAvailableNewsYears, getLatestNews, getMonthName, getNewsForYear, getNewsForYearAndMonth } from "@/utils/news";
 import Link from "next/link";
 
@@ -6,16 +7,17 @@ export default async function Stories({ params }: { params: { filter: string[] }
   const { filter } = await params;
   const selectedYear = filter?.[0];
   const selectedMonth = filter?.[1];
-  const latestNews = getLatestNews();
+  const latestNews = await getLatestNews();
+  const availableYears = await getAvailableNewsYears();
 
-  let news;
-  let links = getAvailableNewsYears();
+  let news: NEWS[] | undefined = undefined;
+  let links = availableYears;
   if (selectedYear) {
     if (selectedMonth) {
-      news = getNewsForYearAndMonth(selectedYear, selectedMonth);
+      news = await getNewsForYearAndMonth(selectedYear, selectedMonth);
       links = [];
     } else {
-      news = getNewsForYear(selectedYear);
+      news = await getNewsForYear(selectedYear);
       links = getAvailableNewsMonths(selectedYear);
     }
   }
@@ -27,8 +29,8 @@ export default async function Stories({ params }: { params: { filter: string[] }
   }
 
   if (
-    (selectedYear && !getAvailableNewsYears().includes(+selectedYear)) ||
-    (selectedMonth && !getAvailableNewsMonths(selectedYear).includes(+selectedMonth))
+    (selectedYear && !availableYears.includes(selectedYear)) ||
+    (selectedMonth && !getAvailableNewsMonths(selectedYear).includes(selectedMonth))
   ) {
     throw new Error("Invalid year or month selected.");
   }
